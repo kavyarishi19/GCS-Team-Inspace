@@ -1,0 +1,10 @@
+# Visual Studio elated directory
+.vs/
+
+# Debug directories
+bin/
+obj/
+
+# Cache files
+*.cache 
+
