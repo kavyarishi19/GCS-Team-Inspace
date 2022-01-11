@@ -33,87 +33,150 @@
 
                                 <!--Sidebar-->
                                 <Border BorderThickness="1,1,1,2"
-                                         BorderBrush="Black"
+                                        BorderBrush="Black"
                                         Grid.Column="0" Grid.Row="0" 
-                                         Padding="8,8,8,0" 
+                                        Padding="8,8,8,0" 
                                         Height="Auto"
                                         Margin="0,8,0,0">
-                                    <!--<StackPanel>-->
-                                        <StackPanel Margin="2 0">
 
-                                            <!--Top Buttons (Flight and Simulation Mode)-->
-                                            <Grid Margin="3,3,3,0" HorizontalAlignment="Center">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="auto" />
-                                                    <ColumnDefinition Width="auto" />
-                                                </Grid.ColumnDefinitions>
+                                    <!--Top Buttons (Flight and Simulation Mode)-->
+                                        <TabControl Background="#eee">
+                                            <TabItem Header="FLIGHT CONTROL">
+                                            <StackPanel Margin="2 0">
+                                                <TextBlock TextAlignment="Center" Margin="4" Text="NET ID/PAN ID: XYXY" />
 
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="auto"/>
-                                                    <RowDefinition Height="auto"/>
-                                                </Grid.RowDefinitions>
-
-                                                <Button Padding="10 3 10 3" Margin="0 5 2 0" Grid.Column="0" Content="FLIGHT MODE"  />
-                                                <Button Padding="10 3 10 3" Margin="0 5 2 0" Grid.Column="1" Content="SIMULATION MODE" />
-                                            </Grid>
-
-                                            <!--PAN ID or TEAM ID ig-->
-                                            <TextBlock TextAlignment="Center" Margin="4" Text="NET ID/PAN ID: XYXY" />
-
-                                            <!--Port and BaudRate-->
-                                            <Grid Margin="0 6">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="0.8*" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-
-                                                <TextBlock Text="Port" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                                <ComboBox Grid.Column="1" Margin="0 0 4 3" />
-                                            </Grid>
-
-                                            <Grid Margin="0 0 0 10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="0.7*" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-
-                                                <TextBlock Text="Baudrate" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                                <ComboBox Grid.Column="1" Margin="0 0 4 3" />
-                                            </Grid>
-
-                                            <!--Command Box and send Button-->
-                                            <Grid Margin="0 10 0 8">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="3*" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" FontWeight="Bold" Text="Command Box" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,0,0,0" />
-                                                <Button Padding="4" Grid.Column="1" Background="DarkSlateGray" Foreground="White" Content="Send" Margin="0,0,4,0" />
-                                            </Grid>
-
-                                            <!--MQTT Broker connect and disconnect-->
-                                            <StackPanel>
-                                                <!--Box-->
-                                                <TextBox Padding="6" MaxHeight="34" Margin="4 0 4 0 " />
-
-                                                <!--Connect to MQTT Broker Button-->
-                                                <Button Background="CadetBlue" Content="Connect to MQTT Broker" Padding="6" MaxWidth="240" MaxHeight="100" Margin="0,8,0,0" 
-                                        FontSize="15"/>
-
-                                                <!--Connect and Disconnect Button-->
+                                                <!--Port and BaudRate-->
                                                 <Grid Margin="0 6">
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="0.7*" />
                                                         <ColumnDefinition Width="*" />
                                                     </Grid.ColumnDefinitions>
 
-                                                    <Button Padding="4" MaxHeight="60" Grid.Column="0" Content="Connect" Background="DarkGray" Foreground="White" Margin="6 2 5 0" 
-                                            FontSize="14"/>
-                                                    <Button Padding="4" MaxHeight="60" Grid.Column="1" Margin="4 2 4 0" Content="Disconnect" Background="DarkGray" Foreground="White" FontSize="14"/>
+                                                    <TextBlock Text="Port" Grid.Column="0" VerticalAlignment="Center"                                           HorizontalAlignment="Left"/>
+                                                    <ComboBox Grid.Column="1" Margin="0 0 4 3" />
                                                 </Grid>
+
+                                                <Grid Margin="0 0 0 10">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="0.7*" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <TextBlock Text="Baudrate" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                    <ComboBox Grid.Column="1" Margin="0 0 4 3" />
+                                                </Grid>
+
+                                                <!--Command Box and send Button-->
+                                                <Grid Margin="0 10 0 8">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="3*" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" FontWeight="Bold" Text="Command Box" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,0,0,0" />
+                                                    <Button Padding="4" Grid.Column="1" Background="DarkSlateGray" Foreground="White" Content="Send" Margin="0,0,4,0" />
+                                                </Grid>
+
+                                                <!--MQTT Broker connect and disconnect-->
+                                                <StackPanel>
+                                                    <!--Box-->
+                                                    <TextBox Padding="6" MaxHeight="34" Margin="4 0 4 0 " />
+
+                                                    <!--Connect to MQTT Broker Button-->
+                                                    <Button Background="CadetBlue" Content="Connect to MQTT Broker" Padding="6" MaxWidth="240" MaxHeight="100" Margin="0,8,0,0" 
+                                        FontSize="15"/>
+
+                                                    <!--Connect and Disconnect Button-->
+                                                    <Grid Margin="0 6">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="*" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <Button Padding="4" MaxHeight="60" Grid.Column="0" Content="Connect" Background="DarkGray" Foreground="White" Margin="6 2 5 0" 
+                                            FontSize="14"/>
+                                                        <Button Padding="4" MaxHeight="60" Grid.Column="1" Margin="4 2 4 0" Content="Disconnect" Background="DarkGray" Foreground="White" FontSize="14"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <!--</StackPanel>-->
                                             </StackPanel>
-                                        <!--</StackPanel>-->
-                                    </StackPanel>
+                                        </TabItem>
+                                            <TabItem Header="SIMULATION MODE">
+                                            <StackPanel Margin="2 0">
+                                                <TextBlock TextAlignment="Center" Margin="4" Text="NET ID/PAN ID: XYXY" />
+
+                                                <!--Port and BaudRate-->
+                                                <Grid Margin="0 6">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="0.7*" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <TextBlock Text="Port" Grid.Column="0" VerticalAlignment="Center"                                           HorizontalAlignment="Left"/>
+                                                    <ComboBox Grid.Column="1" Margin="0 0 4 3" />
+                                                </Grid>
+
+                                                <Grid Margin="0 0 0 10">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="0.7*" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <TextBlock Text="Baudrate" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                    <ComboBox Grid.Column="1" Margin="0 0 4 3" />
+                                                </Grid>
+
+                                                <!--Upload CSV file/ Send CSV file button-->
+                                                <Grid Margin="3">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Button Content="Upload csv-file" 
+                                                            Grid.Column="0"
+                                                            Padding="3"
+                                                            Margin="0 0 10 0"
+                                                            Background="CadetBlue"/>
+                                                    <Button Content="Send csv-file" 
+                                                            Grid.Column="1"
+                                                            Padding="3"
+                                                            Background="CadetBlue"/>
+                                                </Grid>
+
+                                                <!--Command Box and send Button-->
+                                                <Grid Margin="0 10 0 8">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="3*" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" FontWeight="Bold" Text="Command Box" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,0,0,0" />
+                                                    <Button Padding="4" Grid.Column="1" Background="DarkSlateGray" Foreground="White" Content="Send" Margin="0,0,4,0" />
+                                                </Grid>
+
+                                                <!--MQTT Broker connect and disconnect-->
+                                                <StackPanel>
+                                                    <!--Box-->
+                                                    <TextBox Padding="6" MaxHeight="34" Margin="4 0 4 0 " />
+
+                                                    <!--Connect and Disconnect Button-->
+                                                    <Grid Margin="0 6">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="*" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <Button Padding="4" MaxHeight="60" Grid.Column="0" Content="Connect" Background="DarkGray" Foreground="White" Margin="6 2 5 0" 
+                                            FontSize="14"/>
+                                                        <Button Padding="4" MaxHeight="60" Grid.Column="1" Margin="4 2 4 0" Content="Disconnect" Background="DarkGray" Foreground="White" FontSize="14"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <!--</StackPanel>-->
+                                            </StackPanel>
+                                        </TabItem>
+                                        </TabControl>
+
+                                            <!--PAN ID or TEAM ID ig-->
+                                            
                                 </Border>
 
                                 <!--Mission States-->
