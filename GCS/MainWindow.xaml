@@ -5,312 +5,326 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GCS"
         mc:Ignorable="d"
-        Height="900" Width="1150"
-        Title="Ground-Station Team Inspace" FontSize="15" >
-    <Border Padding="20 10 20 10" Background="#eee">
+        Height="710" Width="1250"
+        Title="Ground-Station Team Inspace" FontSize="14" >
+    <Border Padding="0 10 20 10" Background="#eee">
 
         <StackPanel>
+            
+            <!--Tabs (Navbar)-->
+            <TabControl Background="#eee">
+                
+                <!--Ground Station and all it's Content-->
+                <TabItem Header="  GROUND STATION  ">
+                    <StackPanel>
+                        <Grid>
+                            <!-- Side Bar Parts -->
+                            <Grid Margin="3,0,3,0">
 
-            <!--Navbar-->
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <!--Navbar Content-->
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="4" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <Button Margin="0 0 5 0" Grid.Column="0" Background="#ffffff" />
-                    <Button Margin="0 0 5 0" Padding="4" Grid.Column="1" Content="  GROUND STATION  " />
-                    <Button Margin="0 0 5 0" Padding="4" Grid.Column="2" Content="  INTERFACE  " />
-                    <Button Margin="0 0 5 0" Padding="4" Grid.Column="3" Content="  CONTAINER DATA  " />
-                    <Button Margin="0 0 5 0" Padding="4" Grid.Column="4" Content="  PAYLOAD DATA  " />
-                </Grid>
-            </Grid>
-
-            <Grid>
-                <!-- Side Bar Parts -->
-                <Grid>
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.9*" />
-                        <ColumnDefinition Width="3*" />
-                    </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="1.3*" />
-                    </Grid.RowDefinitions>
-
-                    <!--Sidebar-->
-                    <StackPanel Grid.Column="0" Grid.Row="0" >
-                        <StackPanel Margin="2 0">
-
-                            <!--Top Buttons (Flight and Simulation Mode)-->
-                            <Grid Margin="3" HorizontalAlignment="Center">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="3*" />
                                 </Grid.ColumnDefinitions>
 
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
 
-                                <Button Padding="10 3 10 3" Margin="0 0 1 0" Grid.Column="0" Content="FLIGHT MODE"  />
-                                <Button Padding="10 3 10 3" Margin="0 0 1 0" Grid.Column="1" Content="SIMULATION MODE" />
-                            </Grid>
+                                <!--Sidebar-->
+                                <Border BorderThickness="1,1,1,2"
+                                         BorderBrush="Black"
+                                        Grid.Column="0" Grid.Row="0" 
+                                         Padding="8,8,8,0" 
+                                        Height="Auto"
+                                        Margin="0,8,0,0">
+                                    <!--<StackPanel>-->
+                                        <StackPanel Margin="2 0">
 
-                            <!--PAN ID or TEAM ID ig-->
-                            <TextBlock TextAlignment="Center" Margin="4" Text="NET ID/PAN ID: XYXY" />
+                                            <!--Top Buttons (Flight and Simulation Mode)-->
+                                            <Grid Margin="3,3,3,0" HorizontalAlignment="Center">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto" />
+                                                    <ColumnDefinition Width="auto" />
+                                                </Grid.ColumnDefinitions>
 
-                            <!--Port and BaudRate-->
-                            <Grid Margin="0 6">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                </Grid.RowDefinitions>
 
-                                <TextBlock Text="Port" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                <ComboBox Grid.Column="1" Margin="0 0 0 3"  />
-                            </Grid>
+                                                <Button Padding="10 3 10 3" Margin="0 5 2 0" Grid.Column="0" Content="FLIGHT MODE"  />
+                                                <Button Padding="10 3 10 3" Margin="0 5 2 0" Grid.Column="1" Content="SIMULATION MODE" />
+                                            </Grid>
 
-                            <Grid Margin="0 0 0 10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+                                            <!--PAN ID or TEAM ID ig-->
+                                            <TextBlock TextAlignment="Center" Margin="4" Text="NET ID/PAN ID: XYXY" />
 
-                                <TextBlock Text="Baudrate" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                <ComboBox Grid.Column="1"  />
-                            </Grid>
+                                            <!--Port and BaudRate-->
+                                            <Grid Margin="0 6">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="0.8*" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
 
-                            <!--Command Box and send Button-->
-                            <Grid Margin="0 10 0 8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="3*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" FontWeight="Bold" Text="Command Box" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                                <Button Padding="4" Grid.Column="1" Background="DarkSlateGray" Foreground="White" Content="Send" />
-                            </Grid>
+                                                <TextBlock Text="Port" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                <ComboBox Grid.Column="1" Margin="0 0 4 3" />
+                                            </Grid>
 
-                            <!--MQTT Broker connect and disconnect-->
-                            <StackPanel>
-                                <!--Box-->
-                                <TextBox Padding="6" MaxHeight="34" Margin="0 0 0 5 " />
+                                            <Grid Margin="0 0 0 10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="0.7*" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
 
-                                <!--Connect to MQTT button-->
-                                <Button Background="CadetBlue" Content="Connect to MQTT Broker" Padding="6" MaxWidth="240" MaxHeight="100" Margin="4" 
+                                                <TextBlock Text="Baudrate" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                <ComboBox Grid.Column="1" Margin="0 0 4 3" />
+                                            </Grid>
+
+                                            <!--Command Box and send Button-->
+                                            <Grid Margin="0 10 0 8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="3*" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" FontWeight="Bold" Text="Command Box" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,0,0,0" />
+                                                <Button Padding="4" Grid.Column="1" Background="DarkSlateGray" Foreground="White" Content="Send" Margin="0,0,4,0" />
+                                            </Grid>
+
+                                            <!--MQTT Broker connect and disconnect-->
+                                            <StackPanel>
+                                                <!--Box-->
+                                                <TextBox Padding="6" MaxHeight="34" Margin="4 0 4 0 " />
+
+                                                <!--Connect to MQTT Broker Button-->
+                                                <Button Background="CadetBlue" Content="Connect to MQTT Broker" Padding="6" MaxWidth="240" MaxHeight="100" Margin="0,8,0,0" 
                                         FontSize="15"/>
 
-                                <!--Connect and Disconnect Button-->
-                                <Grid Margin="0 6">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
+                                                <!--Connect and Disconnect Button-->
+                                                <Grid Margin="0 6">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
 
-                                    <Button Padding="4" MaxHeight="60" Grid.Column="0" Content="Connect" Background="DarkGray" Foreground="White" Margin="4 2 4 0" 
+                                                    <Button Padding="4" MaxHeight="60" Grid.Column="0" Content="Connect" Background="DarkGray" Foreground="White" Margin="6 2 5 0" 
                                             FontSize="14"/>
-                                    <Button Padding="4" MaxHeight="60" Grid.Column="1" Margin="4 2 4 0" Content="Disconnect" Background="DarkGray" Foreground="White" FontSize="14"/>
-                                </Grid>
+                                                    <Button Padding="4" MaxHeight="60" Grid.Column="1" Margin="4 2 4 0" Content="Disconnect" Background="DarkGray" Foreground="White" FontSize="14"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        <!--</StackPanel>-->
+                                    </StackPanel>
+                                </Border>
 
-                            </StackPanel>
-                        </StackPanel>
+                                <!--Mission States-->
+                                <Border BorderThickness="1,0,1,1"
+                                    BorderBrush="Black"
+                                    Grid.Column="0" Grid.Row="1"
+                                     Padding="8,8,8,0"
+                                     Margin="0,0,0,10">
+                                    <StackPanel Margin="0" Grid.Row="1">
+
+                                        <!--Heading and Line-->
+                                        <TextBlock Text="Mission State"  FontWeight="Bold" FontSize="20" TextAlignment="Center" Margin="0 0 0 6" />
+                                        <Separator Margin="0 0 2 0" />
+                                        <TextBlock Text=""/>
+
+                                        <!--Launch-->
+                                        <Grid Margin="6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="4*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Ellipse Fill="#ff4067" Height="25" Width="25" StrokeThickness="2" Stroke="DimGray" Grid.Column="0"/>
+                                            <TextBlock Text="Launch" Grid.Column="1"  VerticalAlignment="Stretch" />
+                                        </Grid>
+
+                                        <!--Apogee-->
+                                        <Grid Margin="6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="4*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Ellipse Fill="#ff4067" Height="25" Width="25" StrokeThickness="2" Stroke="DimGray" Grid.Column="0"/>
+                                            <TextBlock Text="Apogee" Grid.Column="1"  VerticalAlignment="Stretch" />
+                                        </Grid>
+
+                                        <!--Payload Released-->
+                                        <Grid Margin="6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="4*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Ellipse Fill="#ff4067" Height="25" Width="25" StrokeThickness="2" Stroke="DimGray" Grid.Column="0"/>
+                                            <TextBlock Text="Payload Released" Grid.Column="1"  VerticalAlignment="Stretch" />
+                                        </Grid>
+
+                                        <!--Payload Touchdown-->
+                                        <Grid Margin="6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="4*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Ellipse Fill="#ff4067" Height="25" Width="25" StrokeThickness="2" Stroke="DimGray" Grid.Column="0"/>
+                                            <TextBlock Text="Payload Touchdown" Grid.Column="1" VerticalAlignment="Stretch" />
+                                        </Grid>
+
+                                        <!--Container Touchdown-->
+                                        <Grid Margin="6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="4*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Ellipse Fill="#ff4067" Height="25" Width="25" StrokeThickness="2" Stroke="DimGray" Grid.Column="0"/>
+                                            <TextBlock Text="Container Touchdown" Grid.Column="1" VerticalAlignment="Stretch" />
+                                        </Grid>
+
+                                        <!--Mission Success-->
+                                        <Grid Margin="6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="4*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Ellipse Fill="#ff4067" Height="25" Width="25" StrokeThickness="2" Stroke="DimGray" Grid.Column="0"/>
+                                            <TextBlock Text="Mission Success" Grid.Column="1" VerticalAlignment="Stretch" />
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!--Left Half Graphs and other imp stuffs-->
+                                <StackPanel Margin="5" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
+
+                                    <!--Software State, Mission Date and Mode and-->
+                                    <!--Packet Count and Mission Count (Battery Life but optional)-->
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1.4*" />
+                                            <ColumnDefinition Width="1.1*" />
+                                            <ColumnDefinition Width="1.3*" />
+                                            <ColumnDefinition Width="1.45*" />
+                                            <ColumnDefinition Width="1.3*" />
+                                            <ColumnDefinition Width="1.2*" />
+                                            <ColumnDefinition Width="1.3*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!--Software State and Packet Count-->
+                                        <StackPanel Grid.Column="0" Margin="10">
+                                            <TextBlock Text="Software State" VerticalAlignment="Center" Margin="0 10 0 10" />
+                                            <TextBlock Text="Packet Count" VerticalAlignment="Center" Margin="0 10 0 10" />
+                                        </StackPanel>
+
+                                        <!--Buttons for software state and packet count-->
+                                        <StackPanel Grid.Column="1" Margin="10 10 10 10">
+                                            <Button Content="Landed" Padding="15 0 15 0" Background="White" Margin="0 10 0 10" />
+                                            <Button Content="XYZ" Padding="20 0 20 0" Background="White" Margin="0 10 0 10" />
+                                        </StackPanel>
+
+                                        <!--Mission Date and Battery Life-->
+                                        <StackPanel Grid.Column="2" Margin="10">
+                                            <TextBlock Text="Mission Date" VerticalAlignment="Center" Margin="0 10 0 10" />
+                                            <TextBlock Text="Battery Life" VerticalAlignment="Center" Margin="0 10 0 10" />
+                                        </StackPanel>
+
+                                        <!--Buttons for Mission Date and Battery Life-->
+                                        <StackPanel Grid.Column="3" Margin="10 10 10 10">
+                                            <Button Content="dd-MM-yyyy" Padding="15 0 15 0" Background="White" Margin="0 10 0 10" />
+                                            <Button Content="XY %" Padding="30 0 30 0" Background="White" Margin="0 10 0 10" />
+                                        </StackPanel>
+
+                                        <!--Mission Mode and Mission Time-->
+                                        <StackPanel Grid.Column="4" Margin="10">
+                                            <TextBlock Text="Mission Mode" VerticalAlignment="Center" Margin="0 10 0 10" />
+                                            <TextBlock Text="Mission Time" VerticalAlignment="Center" Margin="0 10 0 10" />
+                                        </StackPanel>
+
+                                        <!--Buttons for Mission Mode and Mission Time-->
+
+                                        <StackPanel Grid.Column="5" Margin="5 10 5 10">
+                                            <Ellipse Fill="green" Height="20" Width="20" StrokeThickness="2" Stroke="DimGray" Margin="0 10 0 10" VerticalAlignment="Top" />
+                                            <Button Content="hh:mm:ss" Padding="20 0 20 0" Background="White" Margin="0 10 0 10" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="6" Grid.RowSpan="2" VerticalAlignment="Center">
+                                            <!--Team logo-->
+                                            <Image Width="300" Height="100" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
+                                                <Image.Source>
+                                                    <BitmapImage DecodePixelWidth="300" UriSource="./Resources/logo.png" />
+                                                </Image.Source>
+                                            </Image>
+                                        </StackPanel>
+
+                                    </Grid>
+
+                                    <!--Graphs Grid-1-->
+                                    <Grid Grid.RowSpan="2" Margin="0 10 0 10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Image Width="300" Height="250" Grid.Column="0" Grid.RowSpan="2" Margin="0 0 0 0">
+                                            <Image.Source>
+                                                <BitmapImage DecodePixelWidth="600" UriSource="./Resources/dummygraph1.png" />
+                                            </Image.Source>
+                                        </Image>
+
+                                        <Image Width="300" Height="250" Grid.Column="1" Grid.RowSpan="2" Margin="0 0 0 0">
+                                            <Image.Source>
+                                                <BitmapImage DecodePixelWidth="600" UriSource="./Resources/dummygraph2.png" />
+                                            </Image.Source>
+                                        </Image>
+                                    </Grid>
+
+                                    <!--Graph Grid-2-->
+                                    <Grid Grid.RowSpan="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Image Width="300" Height="250" Grid.Column="0" Grid.RowSpan="2" Margin="0 5 0 10">
+                                            <Image.Source>
+                                                <BitmapImage DecodePixelWidth="600" UriSource="./Resources/dummygraph3.png" />
+                                            </Image.Source>
+                                        </Image>
+
+                                        <Image Width="300" Height="250" Grid.Column="1" Grid.RowSpan="2" Margin="0 5 0 10">
+                                            <Image.Source>
+                                                <BitmapImage DecodePixelWidth="600" UriSource="./Resources/dummygraph4.png" />
+                                            </Image.Source>
+                                        </Image>
+                                    </Grid>
+
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
                     </StackPanel>
-                    <!--Mission States-->
-                    <StackPanel Margin="0 14" Grid.Row="2">
+                </TabItem>
+                
+                <!--Interface and all it's content-->
+                <TabItem Header="  INTERFACE  ">
+                    <TextBlock Text="This is interface textblock. Remove This When making"/> 
+                </TabItem>
+                
+                <!--Show Container csv file-->
+                <TabItem Header="  CONTAINER DATA  ">
+                    <TextBlock Text="This is interContainer Data textblock. Remove This When making"/>
+                </TabItem>
 
-                        <!--Heading and Line-->
-                        <TextBlock Text="Mission State"  FontWeight="Bold" FontSize="20" TextAlignment="Center" Margin="0 0 0 6" />
-                        <Separator Margin="0 0 2 0" />
-                        <TextBlock Text="" />
+                <!--Show Payload data csv File-->
+                <TabItem Header="  PAYLOAD DATA  ">
+                    <TextBlock Text="This is Payload Data textblock. Remove This When making"/>
+                </TabItem>
+                
+            </TabControl>
 
-                        <!--Launch-->
-                        <Grid Margin="6">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="4*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Ellipse Fill="#ff4067" Height="25" Width="25" StrokeThickness="2" Stroke="DimGray" Grid.Column="0"/>
-                            <TextBlock Text="Launch" Grid.Column="1"  VerticalAlignment="Stretch" />
-                        </Grid>
-
-                        <!--Apogee-->
-                        <Grid Margin="6">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="4*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Ellipse Fill="#ff4067" Height="25" Width="25" StrokeThickness="2" Stroke="DimGray" Grid.Column="0"/>
-                            <TextBlock Text="Apogee" Grid.Column="1"  VerticalAlignment="Stretch" />
-                        </Grid>
-
-                        <!--Payload Released-->
-                        <Grid Margin="6">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="4*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Ellipse Fill="#ff4067" Height="25" Width="25" StrokeThickness="2" Stroke="DimGray" Grid.Column="0"/>
-                            <TextBlock Text="Payload Released" Grid.Column="1"  VerticalAlignment="Stretch" />
-                        </Grid>
-
-                        <!--Payload Touchdown-->
-                        <Grid Margin="6">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="4*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Ellipse Fill="#ff4067" Height="25" Width="25" StrokeThickness="2" Stroke="DimGray" Grid.Column="0"/>
-                            <TextBlock Text="Payload Touchdown" Grid.Column="1" VerticalAlignment="Stretch" />
-                        </Grid>
-
-                        <!--Container Touchdown-->
-                        <Grid Margin="6">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="4*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Ellipse Fill="#ff4067" Height="25" Width="25" StrokeThickness="2" Stroke="DimGray" Grid.Column="0"/>
-                            <TextBlock Text="Container Touchdown" Grid.Column="1" VerticalAlignment="Stretch" />
-                        </Grid>
-
-                        <!--Mission Success-->
-                        <Grid Margin="6">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="4*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Ellipse Fill="#ff4067" Height="25" Width="25" StrokeThickness="2" Stroke="DimGray" Grid.Column="0"/>
-                            <TextBlock Text="Mission Success" Grid.Column="1" VerticalAlignment="Stretch" />
-                        </Grid>
-
-                    </StackPanel>
-
-                    <!--Left Half Graphs and other imp stuffs-->
-                    <StackPanel Margin="20" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
-
-                        <!--Software State, Mission Date and Mode and-->
-                        <!--Packet Count and Mission Count (Battery Life but optional)-->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1.3*" />
-                                <ColumnDefinition Width="1.1*" />
-                                <ColumnDefinition Width="1.3*" />
-                                <ColumnDefinition Width="1.4*" />
-                                <ColumnDefinition Width="1.3*" />
-                                <ColumnDefinition Width="1.2*" />
-                                <ColumnDefinition Width="1.4*" />
-                            </Grid.ColumnDefinitions>
-
-                            <!--Software State and Packet Count-->
-                            <StackPanel Grid.Column="0" Margin="15">
-                                <TextBlock Text="Software State" VerticalAlignment="Center" Margin="0 10 0 10" />
-                                <TextBlock Text="Packet Count" VerticalAlignment="Center" Margin="0 10 0 10" />
-                            </StackPanel>
-
-                            <!--Buttons for software state and packet count-->
-                            <StackPanel Grid.Column="1" Margin="10 15 10 15">
-                                <Button Content="Landed" Padding="15 0 15 0" Background="White" Margin="0 10 0 10" />
-                                <Button Content="XYZ" Padding="20 0 20 0" Background="White" Margin="0 10 0 10" />
-                            </StackPanel>
-
-                            <!--Mission Date and Battery Life-->
-                            <StackPanel Grid.Column="2" Margin="15">
-                                <TextBlock Text="Mission Date" VerticalAlignment="Center" Margin="0 10 0 10" />
-                                <TextBlock Text="Battery Life" VerticalAlignment="Center" Margin="0 10 0 10" />
-                            </StackPanel>
-
-                            <!--Buttons for Mission Date and Battery Life-->
-                            <StackPanel Grid.Column="3" Margin="10 15 10 15">
-                                <Button Content="dd-MM-yyyy" Padding="15 0 15 0" Background="White" Margin="0 10 0 10" />
-                                <Button Content="XY %" Padding="30 0 30 0" Background="White" Margin="0 10 0 10" />
-                            </StackPanel>
-
-                            <!--Mission Mode and Mission Time-->
-                            <StackPanel Grid.Column="4" Margin="15">
-                                <TextBlock Text="Mission Mode" VerticalAlignment="Center" Margin="0 10 0 10" />
-                                <TextBlock Text="Mission Time" VerticalAlignment="Center" Margin="0 10 0 10" />
-                            </StackPanel>
-
-                            <!--Buttons for Mission Mode and Mission Time-->
-
-                            <StackPanel Grid.Column="5" Margin="5 15 5 15">
-                                <Ellipse Fill="green" Height="20" Width="20" StrokeThickness="2" Stroke="DimGray" Margin="0 10 0 10" VerticalAlignment="Top" />
-                                <Button Content="hh:mm:ss" Padding="20 0 20 0" Background="White" Margin="0 10 0 10" />
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="6" Grid.RowSpan="2" VerticalAlignment="Center">
-                                <!--Team logo-->
-                                <Image Width="300" Height="100" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
-                                    <Image.Source>
-                                        <BitmapImage DecodePixelWidth="300" UriSource="./Resources/logo.png" />
-                                    </Image.Source>
-                                </Image>
-                            </StackPanel>
-
-                        </Grid>
-
-                        <!--Graphs Grid-1-->
-                        <Grid Grid.RowSpan="2" Margin="0 10 0 10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Image Width="300" Height="250" Grid.Column="0" Grid.RowSpan="2" Margin="0 0 0 0">
-                                <Image.Source>
-                                    <BitmapImage DecodePixelWidth="600" UriSource="./Resources/dummygraph1.png" />
-                                </Image.Source>
-                            </Image>
-
-                            <Image Width="300" Height="250" Grid.Column="1" Grid.RowSpan="2" Margin="0 0 0 0">
-                                <Image.Source>
-                                    <BitmapImage DecodePixelWidth="600" UriSource="./Resources/dummygraph2.png" />
-                                </Image.Source>
-                            </Image>
-                        </Grid>
-                        
-                        <!--Graph Grid-2-->
-                        <Grid Grid.RowSpan="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Image Width="300" Height="250" Grid.Column="0" Grid.RowSpan="2" Margin="0 5 0 10">
-                                <Image.Source>
-                                    <BitmapImage DecodePixelWidth="600" UriSource="./Resources/dummygraph3.png" />
-                                </Image.Source>
-                            </Image>
-
-                            <Image Width="300" Height="250" Grid.Column="1" Grid.RowSpan="2" Margin="0 5 0 10">
-                                <Image.Source>
-                                    <BitmapImage DecodePixelWidth="600" UriSource="./Resources/dummygraph4.png" />
-                                </Image.Source>
-                            </Image>
-                        </Grid>
-
-                    </StackPanel>
-                </Grid>
-            </Grid>
+            
         </StackPanel>
     </Border>
 </Window>
