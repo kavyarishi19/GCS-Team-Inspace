@@ -321,7 +321,7 @@
 
                                         <StackPanel Grid.Column="6" Grid.RowSpan="2" VerticalAlignment="Center">
                                             <!--Team logo-->
-                                            <Image Width="300" Height="100" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
+                                            <Image Width="100" Height="100" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
                                                 <Image.Source>
                                                     <BitmapImage DecodePixelWidth="300" UriSource="./Resources/logo.png" />
                                                 </Image.Source>
