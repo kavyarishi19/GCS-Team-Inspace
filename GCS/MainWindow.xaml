@@ -6,14 +6,20 @@
         xmlns:local="clr-namespace:GCS"
         mc:Ignorable="d"
         Height="710" Width="1250"
-        Title="Ground-Station Team Inspace" FontSize="14" >
+        Title="Ground-Station Team Inspace" FontSize="14" 
+        Icon="./Resources/logo.png">
+    <!--Setting Up Local namespace-->
+    <Window.DataContext>
+        <local:DataListSetUp />
+    </Window.DataContext>
+
     <Border Padding="0 10 20 10" Background="#eee">
 
         <StackPanel>
-            
+
             <!--Tabs (Navbar)-->
             <TabControl Background="#eee">
-                
+
                 <!--Ground Station and all it's Content-->
                 <TabItem Header="  GROUND STATION  ">
                     <StackPanel>
@@ -40,10 +46,10 @@
                                         Margin="0,8,0,0">
 
                                     <!--Top Buttons (Flight and Simulation Mode)-->
-                                        <TabControl Background="#eee">
-                                            <TabItem Header="FLIGHT CONTROL">
+                                    <TabControl Background="#eee">
+                                        <TabItem Header="FLIGHT CONTROL">
                                             <StackPanel Margin="2 0">
-                                                <TextBlock TextAlignment="Center" Margin="4" Text="NET ID/PAN ID: XYXY" />
+                                                <TextBlock TextAlignment="Center" Margin="4" Text="NET ID/PAN ID: 1014" />
 
                                                 <!--Port and BaudRate-->
                                                 <Grid Margin="0 6">
@@ -100,7 +106,7 @@
                                                 <!--</StackPanel>-->
                                             </StackPanel>
                                         </TabItem>
-                                            <TabItem Header="SIMULATION MODE">
+                                        <TabItem Header="SIMULATION MODE">
                                             <StackPanel Margin="2 0">
                                                 <TextBlock TextAlignment="Center" Margin="4" Text="NET ID/PAN ID: XYXY" />
 
@@ -173,10 +179,10 @@
                                                 <!--</StackPanel>-->
                                             </StackPanel>
                                         </TabItem>
-                                        </TabControl>
+                                    </TabControl>
 
-                                            <!--PAN ID or TEAM ID ig-->
-                                            
+                                    <!--PAN ID or TEAM ID ig-->
+
                                 </Border>
 
                                 <!--Mission States-->
@@ -369,25 +375,131 @@
                         </Grid>
                     </StackPanel>
                 </TabItem>
-                
+
                 <!--Interface and all it's content-->
                 <TabItem Header="  INTERFACE  ">
-                    <TextBlock Text="This is interface textblock. Remove This When making"/> 
+                    <Grid>
+                        <!--Column-1 for cansat Column-2 for Map-->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--Canned-Satellite Image-->
+                        <Border Grid.Column="0"
+                                Grid.Row="0"
+                                Padding="10">
+                            <Image Height="610">
+                                <Image.Source>
+                                    <BitmapImage DecodePixelWidth="900" UriSource="./Resources/interfaceleft.png" />
+                                </Image.Source>
+                            </Image>
+                        </Border>
+                        
+                        <!--Map-->
+                        <Grid Grid.Column="1"
+                                Grid.Row="0" >
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Image Height="530"
+                                   Grid.Row="0"
+                                   Margin="0 20 0 10">
+                                <Image.Source>
+                                    <BitmapImage DecodePixelWidth="900" UriSource="./Resources/map.png" />
+                                </Image.Source>
+                            </Image>
+
+                            <!--Latitude and Longitude Grid-->
+                            <Grid Grid.Row="1"
+                                  HorizontalAlignment="Center"
+                                  Margin="0 0 0 5">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                
+                                <!--Latitude Text Block and box-->
+                                <TextBlock Text="Latitude" 
+                                           Grid.Row="0" Grid.Column="0"
+                                           Margin="5"
+                                           Padding="5"
+                                           FontWeight="Bold"
+                                           FontSize="18"/>
+
+                                <Button x:Name="latitudeButton"
+                                        Foreground="White"
+                                        Background="Black"
+                                         Content="107.67"
+                                         Padding="10 5 10 5"
+                                         Grid.Row="0" Grid.Column="1"
+                                         FontSize="18"
+                                         />
+                                
+                                <!--Longitude Text Block and Box-->
+                                <TextBlock Text="Longitude" 
+                                           Grid.Row="1" Grid.Column="0"
+                                           Margin="5"
+                                           Padding="5"
+                                           FontWeight="Bold"
+                                           FontSize="18"/>
+                                
+                                <Button x:Name="longitudeButton"
+                                        Foreground="White"
+                                        Background="Black"
+                                         Content="107.67"
+                                         Padding="10 5 10 5"
+                                         Grid.Row="1" Grid.Column="1"
+                                         FontSize="18"/>
+                            </Grid>
+                            
+                            
+                        </Grid>
+                    </Grid>
                 </TabItem>
-                
+
                 <!--Show Container csv file-->
                 <TabItem Header="  CONTAINER DATA  ">
-                    <TextBlock Text="This is interContainer Data textblock. Remove This When making"/>
+
+                    <!--CSV File in Table Format-->
+                    <DataGrid x:Name="containerDataGrid" 
+                              ItemsSource="{Binding containerData}"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Center" 
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              CanUserReorderColumns="False"
+                              AlternatingRowBackground="LightGray"
+                              Height="650"/>
                 </TabItem>
 
                 <!--Show Payload data csv File-->
+                <!--TO FIX: scrolling thingy-->
                 <TabItem Header="  PAYLOAD DATA  ">
-                    <TextBlock Text="This is Payload Data textblock. Remove This When making"/>
+                    <!--CSV File in Table Format-->
+                    <DataGrid x:Name="payloadDataGrid" 
+                              AlternatingRowBackground="LightGray" 
+                              ItemsSource="{Binding payloadData}"
+                              Padding="5 10 5 5" 
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              CanUserReorderColumns="False"
+                              Height="650"/>
+                   
                 </TabItem>
                 
+
             </TabControl>
 
-            
+
         </StackPanel>
     </Border>
 </Window>
