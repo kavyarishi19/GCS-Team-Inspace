@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Height="710" Width="1250"
         Title="Ground-Station Team Inspace" FontSize="14" 
-        Icon="./Resources/logo.png">
+        Icon="./Resources/logo2.png">
     <!--Setting Up Local namespace-->
     <Window.DataContext>
         <local:DataListSetUp />
