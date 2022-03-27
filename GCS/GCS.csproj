@@ -19,6 +19,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <COMReference Include="{215d64d2-031c-33c7-96e3-61794cd1ee61}">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>4</VersionMinor>
+      <VersionMajor>2</VersionMajor>
+      <Guid>215d64d2-031c-33c7-96e3-61794cd1ee61</Guid>
+    </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\dummygraph1.png" />
     <Resource Include="Resources\dummygraph2.png" />
     <Resource Include="Resources\dummygraph3.png" />
@@ -31,6 +40,12 @@
 
   <ItemGroup>
     <Folder Include="Resources\csvFiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
+    <PackageReference Include="ScottPlot" Version="4.1.35" />
+    <PackageReference Include="System.IO.Ports" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
