@@ -1,7 +1,7 @@
 # GCS-Team-Inspace
 
 - Resources Folder contain:
-  - Dummy Graph Images (not used now)
+  - Dummy Graph Images (not used now) and Team LOGO
   - CSVFiles Folder: It contains the csv files for container and payload data
 
 - MQTTPublisher.cs: MQTT Publisher Code (MQTTnet Library Used)
