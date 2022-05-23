@@ -325,15 +325,15 @@
                                         <!--Data Plots--> 
                                         <TabControl Background="#EEE"
                                                     HorizontalAlignment="Center">
-                                            <TabItem Header="  PRESSURE  " >
-                                                <lvc:CartesianChart x:Name="pressureChart"
+                                            <TabItem Header="  VOLTAGE  " >
+                                                <lvc:CartesianChart x:Name="voltageChart"
                                                                     Margin="20"
                                                                     Height="450"
                                                                     Width="800"
                                                                     >
 
                                                     <lvc:CartesianChart.AxisY>
-                                                        <lvc:Axis Title="  Pressure   " />
+                                                        <lvc:Axis Title="  Voltage   " />
                                                     </lvc:CartesianChart.AxisY>
 
                                                 </lvc:CartesianChart>

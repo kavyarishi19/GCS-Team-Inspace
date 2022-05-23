@@ -40,7 +40,7 @@ namespace GCS
         // Container Packet
         public struct Cpacket
         {
-            public int teamID, missionTime, packetCount;
+            public int teamID, missionTime, packetCount, flightState;
             public double gpsTime, gpsLatitude, gpsLongitude, gpsAltitude, gpsSats, altitude, temp, voltage;
             public string mode, tpReleased, softwareState, cmdEcho, packetType;
         };
@@ -57,15 +57,15 @@ namespace GCS
         public Cpacket data;
 
         // Plotting Charts Data
-        ChartValues<double> pressureChartValue = new ChartValues<double> { 1.2, 2.0, 1.3, 1.21, 1.34, 1.45, 1.1, 0.78 };
+        ChartValues<double> voltageChartValue = new ChartValues<double> { 1.2, 2.0, 1.3, 1.21, 1.34, 1.45, 1.1, 0.78 };
         ChartValues<double> temperatureChartValue = new ChartValues<double> { 34.5, 34.2, 35.8, 39.9, 40.2, 41.9, 35.3 };
         ChartValues<double> altitudeChartValue = new ChartValues<double> { 100, 120, 132.2, 145.2, 123.4, 167.3 };
         public void DrawGraphs()
         {
             LineSeries mySeries1 = new LineSeries
             {
-                Values = pressureChartValue,
-                Title = "Pressure",
+                Values = voltageChartValue,
+                Title = "Voltage",
                 Stroke = Brushes.Blue,
             };
 
@@ -84,7 +84,7 @@ namespace GCS
                  Stroke = Brushes.Red,
              };
 
-            pressureChart.Series.Add(mySeries1);
+            voltageChart.Series.Add(mySeries1);
             temperatureChart.Series.Add(mySeries2);
             altitudeChart.Series.Add(mySeries3);
         }
@@ -137,7 +137,7 @@ namespace GCS
         private void CommandSendButton_Click(object sender, RoutedEventArgs e)
         {
             var s = CommandBoxTextBox.Text.ToString();
-
+            
             if (s.Length == 0)
                 return;
 
@@ -249,10 +249,13 @@ namespace GCS
                 file.Close();
 
                 // Plotting Check Here
+                voltageChartValue.Add(data.voltage);
+                temperatureChartValue.Add(data.temp);
+                altitudeChartValue.Add(data.altitude);
             }
 
             FLIGHTSTATE:
-            switch (data.softwareState)
+            switch (data.flightState)
             {
                 case 2:
                     CalibratedEllipse.Fill = new SolidColorBrush(Colors.Green);
