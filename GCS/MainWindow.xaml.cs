@@ -9,6 +9,12 @@ using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Wpf;
 
+
+// TO_USE:
+//using static GCS.MQTTPublisher;
+//MQTTPublisher a = new MQTTPublisher();
+//a.TestMQTT();
+
 namespace GCS
 {
     /// <summary>
@@ -24,26 +30,69 @@ namespace GCS
         string filePath = @"C:\Users\ISHWARENDRA\source\repos\GCS-Team-Inspace\GCS\Resources\csvFiles\";
         string fileT = @"Flight_1014_T.csv";
         string fileC = @"Flight_1014_C.csv";
+        int PayloadSNum = 1;
+        int ContainerSNum = 1;
 
         // Flight State Variables
-        public int f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0, f6 = 0, fl = 0; // fL and f1 don't get confused 
+        public int f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0, f6 = 0, fl = 0; // fL landing and f1 flight state-1
         private bool already_calibrated = false;
 
-        // Data Struct
-        public new struct packets
+        // Container Packet
+        public struct Cpacket
         {
-            public int teamID, missiontime, packetcount, pressure, flightstate, pitch, roll;
-            public decimal temperature, voltage, gpsalt, gpslat, gpslong, altitude;
+            public int teamID, missionTime, packetCount;
+            public double gpsTime, gpsLatitude, gpsLongitude, gpsAltitude, gpsSats, altitude, temp, voltage;
+            public string mode, tpReleased, softwareState, cmdEcho, packetType;
         };
-        
+
+        // Payload Packet
+        public struct Ppacket
+        {
+            public int teamID, missionTime, packetCount;
+            public double tpAltitude, tpTemp, tpVoltage, gyroR, gyroP, gyroY, accelR, accelP, accelY, MagR, magP, magY;
+            public string pacektType, tpSoftwareState;
+        };
+
         // Data
-        public packets data;
+        public Cpacket data;
 
         // Plotting Charts Data
+        ChartValues<double> pressureChartValue = new ChartValues<double> { 1.2, 2.0, 1.3, 1.21, 1.34, 1.45, 1.1, 0.78 };
+        ChartValues<double> temperatureChartValue = new ChartValues<double> { 34.5, 34.2, 35.8, 39.9, 40.2, 41.9, 35.3 };
+        ChartValues<double> altitudeChartValue = new ChartValues<double> { 100, 120, 132.2, 145.2, 123.4, 167.3 };
+        public void DrawGraphs()
+        {
+            LineSeries mySeries1 = new LineSeries
+            {
+                Values = pressureChartValue,
+                Title = "Pressure",
+                Stroke = Brushes.Blue,
+            };
 
-        public MainWindow()
+             LineSeries mySeries2 = new LineSeries
+             {
+                 Values = temperatureChartValue,
+                 Title = "Temperature",
+                 Stroke = Brushes.Black,
+                 PointGeometrySize = 4,
+             };
+
+             LineSeries mySeries3 = new LineSeries
+             {
+                 Values = altitudeChartValue,
+                 Title = "Altutude",
+                 Stroke = Brushes.Red,
+             };
+
+            pressureChart.Series.Add(mySeries1);
+            temperatureChart.Series.Add(mySeries2);
+            altitudeChart.Series.Add(mySeries3);
+        }
+    public MainWindow()
         {
             InitializeComponent();
+            DrawGraphs();
+
 
             // Setup Date and Time of Mission
             DispatcherTimer timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
@@ -71,11 +120,6 @@ namespace GCS
             this.port.DataReceived += new SerialDataReceivedEventHandler(this.Port_DataReceived);
         }
 
-        private void PressureChart_SourceUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
-        {
-
-        }
-
         private delegate void EventHandle();
 
         private void Form1_Load(object sender, EventArgs e)
@@ -97,11 +141,11 @@ namespace GCS
             if (s.Length == 0)
                 return;
 
-            string first = s[0].ToString();
+            string first = s.Substring(0, 3).ToString().ToLower();
 
             try
             {
-                if ((first == "c") || (first == "C") && (!already_calibrated))
+                if ((first == "cal") && (!already_calibrated))
                 {
                     already_calibrated = true;
                     port.Write("$CALIBRATE#");
@@ -114,12 +158,16 @@ namespace GCS
                     rtb.AppendText("❌ Error Calibrating!");
                 }));
             }
-            if (first == "r" || first == "R")
+            if (first == "res")
             {
-                port.Write("#RESTART$");
-                file = new StreamWriter(filePath + fileC, true);
-                file.WriteLine("RESTART");
-                file.Close();
+                try
+                {
+                    port.Write("#RESTART$");
+                    file = new StreamWriter(filePath + fileC, true);
+                    file.WriteLine("RESTART");
+                    file.Close();
+                }
+                catch { }
             }
         }
 
@@ -168,29 +216,29 @@ namespace GCS
 
             if (packet.Length < 4)
             {
-                data.flightstate = Convert.ToInt32(packet);
+                data.flightState = Convert.ToInt32(packet);
                 goto FLIGHTSTATE;
             }
 
-            else if (packet.Length > 40)
+            else if (packet.Length > 15)
             {
                 // Edit According to the data received
                 string[] pack = packet.Split(',');
 
-                data.missiontime = Convert.ToUInt16(pack[1]);
-
-                data.packetcount = Convert.ToInt32(pack[2]);
-                data.altitude = Convert.ToDecimal(pack[3]);
-                data.pressure = Convert.ToInt32(pack[4]);
-                data.temperature = Convert.ToDecimal(pack[5]);
-                data.voltage = Convert.ToDecimal(pack[6]);
-                data.gpslat = Convert.ToDecimal(pack[8]);
-                data.gpslong = Convert.ToDecimal(pack[9]);
-                data.gpslong = Convert.ToDecimal(pack[10]);
-                data.roll = Convert.ToInt32(pack[12]);
-                data.pitch = Convert.ToInt32(pack[13]);
-                data.flightstate = Convert.ToInt32(pack[15]);
-
+                data.teamID = Convert.ToInt32(pack[0]);
+                data.missionTime = Convert.ToInt32(pack[1]);
+                data.packetCount = Convert.ToInt32(pack[2]);
+                data.packetType = pack[3];
+                data.mode = pack[4];
+                data.tpReleased = pack[5];
+                data.altitude = Convert.ToDouble(pack[6]);
+                data.temp = Convert.ToDouble(pack[7]);
+                data.voltage = Convert.ToDouble(pack[8]);
+                data.gpsTime = Convert.ToDouble(pack[9]);
+                data.gpsLatitude = Convert.ToDouble(pack[10]);
+                data.gpsLongitude = Convert.ToDouble(pack[11]);
+                data.gpsSats = Convert.ToDouble(pack[12]);
+                        
                 Dispatcher.Invoke(new Action(() =>
                 {
                     ContainerDataGrid.Items.Add(pack);
@@ -204,7 +252,7 @@ namespace GCS
             }
 
             FLIGHTSTATE:
-            switch (data.flightstate)
+            switch (data.softwareState)
             {
                 case 2:
                     CalibratedEllipse.Fill = new SolidColorBrush(Colors.Green);

@@ -326,15 +326,44 @@
                                         <TabControl Background="#EEE"
                                                     HorizontalAlignment="Center">
                                             <TabItem Header="  PRESSURE  " >
-                                                
-                                            </TabItem>
-                                            
-                                            <TabItem Header="  TEMPERATURE  " >
+                                                <lvc:CartesianChart x:Name="pressureChart"
+                                                                    Margin="20"
+                                                                    Height="450"
+                                                                    Width="800"
+                                                                    >
 
+                                                    <lvc:CartesianChart.AxisY>
+                                                        <lvc:Axis Title="  Pressure   " />
+                                                    </lvc:CartesianChart.AxisY>
+
+                                                </lvc:CartesianChart>
+                                            </TabItem>
+
+                                            <TabItem Header="  TEMPERATURE  " >
+                                                <lvc:CartesianChart x:Name="temperatureChart"
+                                                                    Margin="20"
+                                                                    Height="450"
+                                                                    Width="800"
+                                                                    >
+                                                    
+                                                    <lvc:CartesianChart.AxisY>
+                                                        <lvc:Axis Title="  Temperature  " />
+                                                    </lvc:CartesianChart.AxisY>
+
+                                                </lvc:CartesianChart>
                                             </TabItem>
                                             
                                             <TabItem Header="  ALTITUDE  " >
+                                                <lvc:CartesianChart x:Name="altitudeChart"
+                                                                    Margin="20"
+                                                                    Height="450"
+                                                                    Width="800">
 
+                                                    <lvc:CartesianChart.AxisY>
+                                                        <lvc:Axis Title="   Altutude   " />
+                                                    </lvc:CartesianChart.AxisY>
+
+                                                </lvc:CartesianChart>
                                             </TabItem>
                                         </TabControl>
                                     </Grid>
