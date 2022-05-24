@@ -1,5 +1,7 @@
 # GCS-Team-Inspace
 
+### Open [GroundStation.sln]([google.com](https://github.com/Ishwarendra/GCS-Team-Inspace/blob/main/GroundStation.sln)) and press F5 to run!
+
 - Resources Folder contain:
   - Dummy Graph Images (not used now) and Team LOGO
   - CSVFiles Folder: It contains the csv files for container and payload data
