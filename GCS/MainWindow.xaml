@@ -96,7 +96,11 @@
                                                                VerticalAlignment="Center"
                                                              />
                                                     <ComboBox x:Name="BaudRateComboBox"
-                                                              Grid.Column="1"/>
+                                                              Grid.Column="1">
+                                                        <ComboBoxItem>
+                                                            9600
+                                                        </ComboBoxItem>
+                                                    </ComboBox>
 
                                                 </Grid>
 
@@ -135,6 +139,7 @@
                                                 <!--Connect To MQTT Broker Button-->
                                                 <Button x:Name="ConnectMQTTButton"
                                                         Content="Connect To MQTT Broker"
+                                                        Click="ConnectMQTTButton_Click"
                                                         Foreground="Black"
                                                         Background="AliceBlue" 
                                                         Padding="5"
@@ -267,13 +272,13 @@
                                         <!--Software State and Packet Count-->
                                         <StackPanel Grid.Column="0" Margin="10">
                                             <TextBlock Text="Software State" VerticalAlignment="Center" Margin="0 10 0 10" />
-                                            <TextBlock Text="Packet Count" VerticalAlignment="Center" Margin="0 10 0 10" />
+                                            <TextBlock Text="Packet Count (C)" VerticalAlignment="Center" Margin="0 10 0 10" />
                                         </StackPanel>
 
                                         <!--Buttons for software state and packet count-->
                                         <StackPanel Grid.Column="1" Margin="10 10 10 10">
                                             <Button x:Name="SoftwareStateButton"
-                                                Content="Waiting" Padding="15 0 15 0" Background="White" Margin="0 10 0 10" />
+                                                Content="LW" Padding="15 0 15 0" Background="White" Margin="0 10 0 10" />
                                             <Button x:Name="PacketCountButton"
                                                 Content="0" Padding="20 0 20 0" Background="White" Margin="0 10 0 10" />
                                         </StackPanel>
@@ -322,14 +327,18 @@
                                     </Grid>
 
                                     <Grid>
-                                        <!--Data Plots--> 
+                                        <!--Data Plots-->
+                                        
+                                        <!--Container-->
                                         <TabControl Background="#EEE"
                                                     HorizontalAlignment="Center">
-                                            <TabItem Header="  VOLTAGE  " >
+                                            <TabItem Header="  VOLTAGE (C) " >
                                                 <lvc:CartesianChart x:Name="voltageChart"
                                                                     Margin="20"
                                                                     Height="450"
                                                                     Width="800"
+                                                                    DisableAnimations="True"
+                                                                    UpdaterTick="voltageChart_UpdaterTick"
                                                                     >
 
                                                     <lvc:CartesianChart.AxisY>
@@ -339,11 +348,13 @@
                                                 </lvc:CartesianChart>
                                             </TabItem>
 
-                                            <TabItem Header="  TEMPERATURE  " >
+                                            <TabItem Header="  TEMPERATURE (C)  " >
                                                 <lvc:CartesianChart x:Name="temperatureChart"
                                                                     Margin="20"
                                                                     Height="450"
                                                                     Width="800"
+                                                                    DisableAnimations="True"
+                                                                    UpdaterTick="temperatureChart_UpdaterTick"
                                                                     >
                                                     
                                                     <lvc:CartesianChart.AxisY>
@@ -353,14 +364,66 @@
                                                 </lvc:CartesianChart>
                                             </TabItem>
                                             
-                                            <TabItem Header="  ALTITUDE  " >
+                                            <TabItem Header="  ALTITUDE (C)  " >
                                                 <lvc:CartesianChart x:Name="altitudeChart"
                                                                     Margin="20"
                                                                     Height="450"
-                                                                    Width="800">
+                                                                    Width="800"
+                                                                    DisableAnimations="True"
+                                                                    UpdaterTick="altitudeChart_UpdaterTick"
+                                                                    >
 
                                                     <lvc:CartesianChart.AxisY>
-                                                        <lvc:Axis Title="   Altutude   " />
+                                                        <lvc:Axis Title="   Altitude   " />
+                                                    </lvc:CartesianChart.AxisY>
+
+                                                </lvc:CartesianChart>
+                                            </TabItem>
+
+                                            <!--Payload-->
+                                            <TabItem Header="  VOLTAGE (P) " >
+                                                <lvc:CartesianChart x:Name="voltageChartPayload"
+                                                                    Margin="20"
+                                                                    Height="450"
+                                                                    Width="800"
+                                                                    DisableAnimations="True"
+                                                                    UpdaterTick="voltageChartPayload_UpdaterTick"
+                                                                    >
+
+                                                    <lvc:CartesianChart.AxisY>
+                                                        <lvc:Axis Title="  Voltage (Payload)   " />
+                                                    </lvc:CartesianChart.AxisY>
+
+                                                </lvc:CartesianChart>
+                                            </TabItem>
+                                            
+                                            <TabItem Header="  TEMPERATURE (P)  " >
+                                                <lvc:CartesianChart x:Name="temperatureChartPayload"
+                                                                    Margin="20"
+                                                                    Height="450"
+                                                                    Width="800"
+                                                                    DisableAnimations="True"
+                                                                    UpdaterTick="temperatureChartPayload_UpdaterTick"
+                                                                    >
+
+                                                    <lvc:CartesianChart.AxisY>
+                                                        <lvc:Axis Title="  Temperature (Payload)  " />
+                                                    </lvc:CartesianChart.AxisY>
+
+                                                </lvc:CartesianChart>
+                                            </TabItem>
+
+                                            <TabItem Header="  ALTITUDE (P)  " >
+                                                <lvc:CartesianChart x:Name="altitudeChartPayload"
+                                                                    Margin="20"
+                                                                    Height="450"
+                                                                    Width="800"
+                                                                    UpdaterTick="altitudeChartPayload_UpdaterTick"
+                                                                    DisableAnimations="True"
+                                                                    >
+
+                                                    <lvc:CartesianChart.AxisY>
+                                                        <lvc:Axis Title="   Altitude (Payload)   " />
                                                     </lvc:CartesianChart.AxisY>
 
                                                 </lvc:CartesianChart>
