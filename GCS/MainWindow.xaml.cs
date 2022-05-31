@@ -107,7 +107,7 @@ namespace GCS
             DrawGraphs();
 
             // Initial States set up
-            rtb.AppendText("✅ Connection Established to GCS Arduino.\n");
+            //rtb.AppendText("✅ Connection Established to GCS Arduino.\n");
             AddAllColumnInContainerDataGrid(containerDataGridColumnName);
             AddAllColumnInPayloadDataGrid(payloadDataGridColumnName);
 
@@ -133,27 +133,8 @@ namespace GCS
 
             timer1.Start();
 
-            // Add Container and Payload packets to DataGrid
-            //if (pxon)
-            //{
-            //    DispatcherTimer payloadTimer = new DispatcherTimer(new TimeSpan(0, 0, 0, 0, 1000), DispatcherPriority.Normal, delegate
-            //    {
-            //        PayloadpacketCnt += 1;
-            //        packetCnt++;
-
-            //    }, this.Dispatcher);
-            //}
-
-            //if (cxon)
-            //{ 
-            //    DispatcherTimer containerTimer = new DispatcherTimer(new TimeSpan(0, 0, 0, 0, 250), DispatcherPriority.Normal, delegate
-            //    {
-            //        ContainerpacketCnt += 1;
-            //        packetCnt++;
-            //    }, this.Dispatcher);
-            //}
-
             // Add Ports to Port Combo Box
+            //PortComboBox.Items.Add("COM4");
             foreach (string s in SerialPort.GetPortNames())
                 PortComboBox.Items.Add(s);
 
@@ -434,7 +415,7 @@ namespace GCS
             }
         }
         #endregion
-        private void rtb_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void rtb_TextChanged(object sender, TextChangedEventArgs e)
         {
             rtb.ScrollToEnd();
         }
@@ -532,13 +513,16 @@ namespace GCS
                 {
                     port.Open();
                 }
-                catch { }
+                catch 
+                {
+                    Trace.WriteLine("Unable to open Port! Check again pls")
+                }
                 
                 rtb.AppendText("✅ Connection Established to GCS Arduino.\n");
             }
             catch
             {
-                rtb.AppendText("✅ Connection Established to GCS Arduino already!.\n");
+                rtb.AppendText("Unable to connect! \n");
             }
         }
 
@@ -686,6 +670,7 @@ namespace GCS
                 }
             }
 
+        # region Useless 
         private void ReadPayloadDataFromCSV()
         {
             string payloadFile = filePath + fileT;
@@ -719,8 +704,6 @@ namespace GCS
             }
             catch { }
         }
-
-        #region ADD Columns in DATAGRID Both Container and Payload
         private void AddAllColumnInContainerDataGrid(List<string> a)
         {
             foreach (var colName in a)
@@ -732,6 +715,8 @@ namespace GCS
             foreach (var colName in a)
                 AddColumnInPayloadDataGridWithName(colName);
         }
+
+        #endregion
 
         private void AddColumnInContainerDataGridWithName(string header)
         {
@@ -748,8 +733,6 @@ namespace GCS
             textColumn.Binding = new Binding(header);
             PayloadDataGrid.Columns.Add(textColumn);
         }
-
-        #endregion
     }
 
     #region Data Template for Payload and Container Data
