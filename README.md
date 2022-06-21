@@ -11,3 +11,9 @@
 - `MainWindow.xaml`: Contains the xaml file for GCS
 
 - `MainWindow.xaml.cs`: Provides various functionalities from behind like plotting graphs in real time, sending and receiving data from serial etc.
+
+### This is how the Software Looks like
+___
+<br>
+
+![gcs](./GCS/Resources/Preview/preview1.jpg)

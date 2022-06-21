@@ -328,7 +328,7 @@
 
                                     <Grid>
                                         <!--Data Plots-->
-                                        
+
                                         <!--Container-->
                                         <TabControl Background="#EEE"
                                                     HorizontalAlignment="Center">
@@ -356,14 +356,14 @@
                                                                     DisableAnimations="True"
                                                                     UpdaterTick="temperatureChart_UpdaterTick"
                                                                     >
-                                                    
+
                                                     <lvc:CartesianChart.AxisY>
                                                         <lvc:Axis Title="  Temperature  " />
                                                     </lvc:CartesianChart.AxisY>
 
                                                 </lvc:CartesianChart>
                                             </TabItem>
-                                            
+
                                             <TabItem Header="  ALTITUDE (C)  " >
                                                 <lvc:CartesianChart x:Name="altitudeChart"
                                                                     Margin="20"
@@ -396,7 +396,7 @@
 
                                                 </lvc:CartesianChart>
                                             </TabItem>
-                                            
+
                                             <TabItem Header="  TEMPERATURE (P)  " >
                                                 <lvc:CartesianChart x:Name="temperatureChartPayload"
                                                                     Margin="20"
@@ -430,7 +430,7 @@
                                             </TabItem>
                                         </TabControl>
                                     </Grid>
-                                    
+
                                 </StackPanel>
                             </Grid>
                         </Grid>
@@ -439,7 +439,7 @@
 
                 <!--Show Container csv file-->
                 <TabItem x:Name="containerDataTabitem"
-                         Header="  CONTAINER DATA  "
+                         Header="  CONTAINER DATA (C)  "
                          >
 
                     <!--CSV File in Table Format-->
@@ -459,7 +459,7 @@
 
                 <!--Show Payload data csv File-->
                 <!--TO FIX: scrolling thingy [FIXED]-->
-                <TabItem Header="  PAYLOAD DATA  ">
+                <TabItem Header="  PAYLOAD DATA (T)  ">
                     <!--CSV File in Table Format-->
                     <DataGrid x:Name="PayloadDataGrid" 
                               AlternatingRowBackground="LightGray" 
@@ -471,6 +471,17 @@
 
                 </TabItem>
 
+                <TabItem Header="  CUSTOM DATA (X) ">
+                    <!--CSV File in Table Format-->
+                    <DataGrid x:Name="CustomDataGrid" 
+                              AlternatingRowBackground="LightGray" 
+                              Padding="5 10 5 5" 
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              CanUserReorderColumns="False"
+                              Height="650"/>
+
+                </TabItem>
 
             </TabControl>
 
