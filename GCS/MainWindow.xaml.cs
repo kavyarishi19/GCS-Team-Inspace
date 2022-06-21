@@ -526,22 +526,22 @@ namespace GCS
                 // Container Data Received
                 if (pack[3] == "C")
                 {
-                    //data.teamID = Convert.ToInt32(pack[0]);
-                    //data.missionTime = pack[1];
-                    //data.packetCount = Convert.ToInt32(pack[2]);
-                    //data.packetType = pack[3];
-                    //data.mode = pack[4];
-                    //data.tpReleased = pack[5];
-                    //data.altitude = Convert.ToDouble(pack[6]);
-                    //data.temp = Convert.ToDouble(pack[7]);
-                    //data.voltage = Convert.ToDouble(pack[8]);
-                    //data.gpsTime = Convert.ToDouble(pack[9]);
-                    //data.gpsLatitude = Convert.ToDouble(pack[10]);
-                    //data.gpsLongitude = Convert.ToDouble(pack[11]);
-                    //data.gpsAltitude = Convert.ToDouble(pack[12]);
-                    //data.gpsSats = Convert.ToDouble(pack[13]);
-                    //data.softwareState = pack[14];
-                    //data.cmdEcho = pack[15];
+                    data.teamID = Convert.ToInt32(pack[0]);
+                    data.missionTime = pack[1];
+                    data.packetCount = Convert.ToInt32(pack[2]);
+                    data.packetType = pack[3];
+                    data.mode = pack[4];
+                    data.tpReleased = pack[5];
+                    data.altitude = Convert.ToDouble(pack[6]);
+                    data.temp = Convert.ToDouble(pack[7]);
+                    data.voltage = Convert.ToDouble(pack[8]);
+                    data.gpsTime = Convert.ToDouble(pack[9]);
+                    data.gpsLatitude = Convert.ToDouble(pack[10]);
+                    data.gpsLongitude = Convert.ToDouble(pack[11]);
+                    data.gpsAltitude = Convert.ToDouble(pack[12]);
+                    data.gpsSats = Convert.ToDouble(pack[13]);
+                    data.softwareState = pack[14];
+                    data.cmdEcho = pack[15];
 
                     Dispatcher.Invoke(new Action(() =>
                     {
@@ -554,9 +554,9 @@ namespace GCS
                     file.Close();
 
                     // Plotting Check Here
-                    //voltageChartValue.Add(data.voltage);
-                    //temperatureChartValue.Add(data.temp);
-                    //altitudeChartValue.Add(data.altitude);
+                    voltageChartValue.Add(data.voltage);
+                    temperatureChartValue.Add(data.temp);
+                    altitudeChartValue.Add(data.altitude);
                 }
 
                 // Payload Data receieved
