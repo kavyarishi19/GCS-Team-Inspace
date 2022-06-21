@@ -10,10 +10,10 @@ using LiveCharts;
 using LiveCharts.Wpf;
 using System.Windows.Controls;
 using System.Windows.Data;
+using static GCS.MQTTPublisher;
 
 
 // TO_USE:
-//using static GCS.MQTTPublisher;
 //MQTTPublisher a = new MQTTPublisher();
 //a.TestMQTT();
 
@@ -28,7 +28,8 @@ namespace GCS
         #region Port, File, FlightState, MQTT, Packet Structs
 
         // Port and File YWUYIWUYUWYWIUYWWWWWWWWWWWWWWWWWWWWWWWWI
-        public SerialPort port = new SerialPort();
+        SerialPort port = new SerialPort();
+
         StreamWriter file;
 
         string filePath = @"C:\Users\ISHWARENDRA\source\repos\GCS-Team-Inspace\GCS\Resources\csvFiles\";
@@ -42,25 +43,25 @@ namespace GCS
         public int packetCnt { get; set; } = 0;
         public int ContainerpacketCnt { get; set; } = 0;
         public int PayloadpacketCnt { get; set; } = 0;
-        
+
 
         // MQTT Variables
         bool noMqttConnection = true;
-        
+
         // Container Packet
         public struct Cpacket
         {
-            public int teamID, missionTime, packetCount, flightState;
+            public int teamID, packetCount, flightState;
             public double gpsTime, gpsLatitude, gpsLongitude, gpsAltitude, gpsSats, altitude, temp, voltage;
-            public string mode, tpReleased, softwareState, cmdEcho, packetType;
+            public string mode, missionTime, tpReleased, softwareState, cmdEcho, packetType;
         };
 
         // Payload Packet
         public struct Ppacket
         {
-            public int teamID, missionTime, packetCount;
-            public double tpAltitude, tpTemp, tpVoltage, gyroR, gyroP, gyroY, accelR, accelP, accelY, MagR, magP, magY;
-            public string pacektType, tpSoftwareState;
+            public int teamID, packetCount;
+            public double tpAltitude, tpTemp, tpVoltage, gyroR, gyroP, gyroY, accelR, accelP, accelY, magR, magP, magY;
+            public string packetType, missionTime, pointingError, tpSoftwareState;
         };
         #endregion
 
@@ -75,7 +76,7 @@ namespace GCS
         {
             "S_NO", "TEAM_ID", "PACKET_COUNT", "PACKET_TYPE", "TP_ALTITUDE", "TP_TEMP",
             "TP_VOLTAGE", "GYRO_R", "GYRO_P", "GYRO_Y", "ACCEL_R", "ACCEL_P", "ACCEL_Y",
-            "MAG_R", "MAG_P", "MAG_R", "MAG_Y", "POINTING_ERROR", "TP_SOFTWARE_STATE"
+            "MAG_R", "MAG_P", "MAG_Y", "POINTING_ERROR", "TP_SOFTWARE_STATE"
         };
 
         List<List<string>> ContainerData;
@@ -87,19 +88,12 @@ namespace GCS
 
         // Plotting Charts Data
         ChartValues<double> voltageChartValue = new ChartValues<double> { };
-        ChartValues<double> temperatureChartValue = new ChartValues<double> {  };
+        ChartValues<double> temperatureChartValue = new ChartValues<double> { };
         ChartValues<double> altitudeChartValue = new ChartValues<double> { };
         ChartValues<double> voltageChartPayloadValue = new ChartValues<double> { };
         ChartValues<double> temperatureChartPayloadValue = new ChartValues<double> { };
         ChartValues<double> altitudeChartPayloadValue = new ChartValues<double> { };
 
-        bool inc = true;
-        int ContainerGraphSize = 150;
-        int PayloadGraphSize = 160;
-
-        double voltP = 8.9, redP = 0.01, voltC = 8.8, redC = 0.01;
-        double tempP = 0, tempC = 34.3;
-        
         public MainWindow()
         {
             // WPF Initialise component
@@ -110,6 +104,7 @@ namespace GCS
             //rtb.AppendText("✅ Connection Established to GCS Arduino.\n");
             AddAllColumnInContainerDataGrid(containerDataGridColumnName);
             AddAllColumnInPayloadDataGrid(payloadDataGridColumnName);
+            AddAllColumnInCustomDataGrid();
 
             // Setup Date and Time of Mission
             DispatcherTimer timer1 = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.SystemIdle, delegate
@@ -117,17 +112,17 @@ namespace GCS
                 this.MissionTimeButton.Content = DateTime.Now.ToUniversalTime().ToString("HH:mm:ss");
                 this.MissionDateButton.Content = DateTime.Now.ToUniversalTime().ToString("d");
 
-                if (cxon)
-                {
-                    packetCnt++;
-                    PacketCountButton.Content = packetCnt.ToString();
-                }
+                //if (cxon)
+                //{
+                //    packetCnt++;
+                //    PacketCountButton.Content = packetCnt.ToString();
+                //}
 
-                if (pxon)
-                {
-                    packetCnt += 4;
-                    PacketCountButton.Content = packetCnt.ToString();
-                }
+                //if (pxon)
+                //{
+                //    packetCnt += 4;
+                //    PacketCountButton.Content = packetCnt.ToString();
+                //}
 
             }, this.Dispatcher);
 
@@ -139,14 +134,15 @@ namespace GCS
                 PortComboBox.Items.Add(s);
 
             // Enable Data terminal and request to send
-            this.port.DtrEnable = true;
+            port.DtrEnable = true;
             this.port.RtsEnable = true;
             try
             {
                 Trace.WriteLine("Port Opened!");
                 this.port.Open();
             }
-            catch {
+            catch
+            {
                 Trace.WriteLine("Cannot open port!");
             };
 
@@ -156,11 +152,11 @@ namespace GCS
         private void ConnectMQTTButton_Click(object sender, RoutedEventArgs e)
         {
             if (noMqttConnection)
-                rtb.AppendText("✅ Command Received! Connection will be made as soon as data is received!\n");
+                rtb.AppendText("✅ Command Received!\n");
 
             noMqttConnection = false;
         }
-    
+
         private delegate void EventHandle();
 
         public void DrawGraphs()
@@ -270,149 +266,149 @@ namespace GCS
         #region Graphs with updater Tick
         private void temperatureChart_UpdaterTick(object sender)
         {
-            if (cxon)
-            {
-                try
-                {
-                    if (temperatureChartValue.Count > ContainerGraphSize)
-                        temperatureChartValue.RemoveAt(0);
+            //if (cxon)
+            //{
+            //    try
+            //    {
+            //        if (temperatureChartValue.Count > ContainerGraphSize)
+            //            temperatureChartValue.RemoveAt(0);
 
-                    Random rnd = new Random();
-                    double to_add;
-                    // TODO: First temperature increase till 60 then remain almost constant then decrease
-                    if (tempC < 60 && inc)
-                    {
-                        tempC = (rnd.NextDouble() * (1.5) + tempC);
-                        to_add = tempC;
-                    }
+            //        Random rnd = new Random();
+            //        double to_add;
+            //        // TODO: First temperature increase till 60 then remain almost constant then decrease
+            //        if (tempC < 60 && inc)
+            //        {
+            //            tempC = (rnd.NextDouble() * (1.5) + tempC);
+            //            to_add = tempC;
+            //        }
 
-                    else
-                    {
-                        inc = false;
-                        if (packetCnt < 50)
-                            to_add = rnd.NextDouble() * 1.2 + 60;
-                        else
-                        {
-                            tempC -= Math.Abs(rnd.NextDouble() * 0.4) + 0.72;
-                            to_add = tempC;
-                        }
-                    }
-                    temperatureChartValue.Add(Math.Max(32.3, to_add));
-                }
-                catch { }
-            }
+            //        else
+            //        {
+            //            inc = false;
+            //            if (packetCnt < 50)
+            //                to_add = rnd.NextDouble() * 1.2 + 60;
+            //            else
+            //            {
+            //                tempC -= Math.Abs(rnd.NextDouble() * 0.4) + 0.72;
+            //                to_add = tempC;
+            //            }
+            //        }
+            //        temperatureChartValue.Add(Math.Max(32.3, to_add));
+            //    }
+            //    catch { }
+            //}
         }
 
         private void altitudeChart_UpdaterTick(object sender)
         {
-            if (cxon)
-            {
-                try
-                {
-                    if (altitudeChartValue.Count > ContainerGraphSize)
-                        altitudeChartValue.RemoveAt(0);
+            //if (cxon)
+            //{
+            //    try
+            //    {
+            //        if (altitudeChartValue.Count > ContainerGraphSize)
+            //            altitudeChartValue.RemoveAt(0);
 
-                    Random rnd = new Random();
-                    double to_add = rnd.NextDouble() * (0.2) + 1.9;
-                    altitudeChartValue.Add(to_add);
-                }
-                catch { }
-            }
+            //        Random rnd = new Random();
+            //        double to_add = rnd.NextDouble() * (0.2) + 1.9;
+            //        altitudeChartValue.Add(to_add);
+            //    }
+            //    catch { }
+            //}
         }
 
         private void voltageChart_UpdaterTick(object sender)
         {
-            if (cxon)
-            {
-                try
-                {
-                    if (voltageChartValue.Count > 200)
-                        voltageChartValue.RemoveAt(0);
+            //if (cxon)
+            //{
+            //    try
+            //    {
+            //        if (voltageChartValue.Count > 200)
+            //            voltageChartValue.RemoveAt(0);
 
-                    Random rnd = new Random();
+            //        Random rnd = new Random();
 
-                    voltageChartValue.Add(voltC);
-                    voltC -= redC;
-                }
-                catch { }
-            }
+            //        voltageChartValue.Add(voltC);
+            //        voltC -= redC;
+            //    }
+            //    catch { }
+            //}
         }
 
         private void voltageChartPayload_UpdaterTick(object sender)
         {
-            if (pxon)
-            {
-                try
-                {
-                    Random rnd = new Random();
-                    int repeat = 4;
-                    while (repeat-- > 0)
-                    {
-                        voltageChartPayloadValue.Add(voltP);
-                        voltP -= redP;
-                        if (voltageChartPayloadValue.Count > 200)
-                            voltageChartPayloadValue.RemoveAt(0);
-                    }
-                }
-                catch { }
-            }
+            //if (pxon)
+            //{
+            //    try
+            //    {
+            //        Random rnd = new Random();
+            //        int repeat = 4;
+            //        while (repeat-- > 0)
+            //        {
+            //            voltageChartPayloadValue.Add(voltP);
+            //            voltP -= redP;
+            //            if (voltageChartPayloadValue.Count > 200)
+            //                voltageChartPayloadValue.RemoveAt(0);
+            //        }
+            //    }
+            //    catch { }
+            //}
         }
 
         private void temperatureChartPayload_UpdaterTick(object sender)
         {
-            if (pxon)
-            {
-                try
-                {
-                    if (temperatureChartValue.Count > ContainerGraphSize)
-                        temperatureChartValue.RemoveAt(0);
+            //if (pxon)
+            //{
+            //    try
+            //    {
+            //        if (temperatureChartValue.Count > ContainerGraphSize)
+            //            temperatureChartValue.RemoveAt(0);
 
-                    Random rnd = new Random();
-                    double to_add;
-                    // TODO: First temperature increase till 60 then remain almost constant then decrease
-                    if (tempC < 60 && inc)
-                    {
-                        tempC = (rnd.NextDouble() * (1.5) + tempC);
-                        to_add = tempC;
-                    }
+            //        Random rnd = new Random();
+            //        double to_add;
+            //        // TODO: First temperature increase till 60 then remain almost constant then decrease
+            //        if (tempC < 60 && inc)
+            //        {
+            //            tempC = (rnd.NextDouble() * (1.5) + tempC);
+            //            to_add = tempC;
+            //        }
 
-                    else
-                    {
-                        inc = false;
-                        if (packetCnt < 50)
-                            to_add = rnd.NextDouble() * 1.2 + 60;
-                        else
-                        {
-                            tempC -= Math.Abs(rnd.NextDouble() * 0.4) + 0.72;
-                            to_add = tempC;
-                        }
-                    }
+            //        else
+            //        {
+            //            inc = false;
+            //            if (packetCnt < 50)
+            //                to_add = rnd.NextDouble() * 1.2 + 60;
+            //            else
+            //            {
+            //                tempC -= Math.Abs(rnd.NextDouble() * 0.4) + 0.72;
+            //                to_add = tempC;
+            //            }
+            //        }
 
-                    temperatureChartValue.Add(Math.Max(32.3, to_add));
-                }
-                catch { }
-            }
+            //        temperatureChartValue.Add(Math.Max(32.3, to_add));
+            //    }
+            //catch { }
+            //}
         }
 
         private void altitudeChartPayload_UpdaterTick(object sender)
         {
-            if (pxon)
-            {
-                try
-                {
-                    Random rnd = new Random();
-                    int repeat = 4;
-                    while (repeat-- > 0)
-                    {
-                        double to_add = rnd.NextDouble() * (0.2) + 1.9;
-                        altitudeChartPayloadValue.Add(to_add);
+            //if (pxon)
+            //{
+            //    try
+            //    {
+            //        Random rnd = new Random();
+            //        int repeat = 4;
+            //        while (repeat-- > 0)
+            //        {
+            //            double to_add = rnd.NextDouble() * (0.2) + 1.9;
+            //            altitudeChartPayloadValue.Add(to_add);
 
-                        if (altitudeChartPayloadValue.Count > PayloadGraphSize)
-                            altitudeChartPayloadValue.RemoveAt(0);
-                    }
-                }
-                catch { }
-            }
+            //            if (altitudeChartPayloadValue.Count > PayloadGraphSize)
+            //                altitudeChartPayloadValue.RemoveAt(0);
+            //        }
+            //    }
+            //catch { }
+            //}
         }
         #endregion
         private void rtb_TextChanged(object sender, TextChangedEventArgs e)
@@ -420,7 +416,7 @@ namespace GCS
             rtb.ScrollToEnd();
         }
 
-        // COMMAND BOX
+        // COMMAND BOX (ALL PORT COMMAND MUST START AT $ and end with NULL character \0)
         private void CommandSendButton_Click(object sender, RoutedEventArgs e)
         {
             var s = CommandBoxTextBox.Text.ToString();
@@ -432,13 +428,13 @@ namespace GCS
 
             try
             {
-                if ((first == "calibrate") && (!already_calibrated))
+                if ((first == "calibrate"))
                 {
                     already_calibrated = true;
-                    port.Write("$CALIBRATE#");
+                    port.Write("CALIBRATE");
                 }
             }
-            catch 
+            catch
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
@@ -448,55 +444,41 @@ namespace GCS
 
             try
             {
-                // cmd,1014,cx,on
-                if ((first.Length == 14) && (first.Substring(9, 2) == "cx"))
+                // cmd,1014,cx,on or off
+                if (first.Substring(0, 11) == "cmd,1014,cx")
                 {
-                    if (!cxon)
-                    {
-                        Dispatcher.Invoke(new Action(() =>
-                        {
-                            rtb.AppendText($"✅ Command Received: {first.ToUpper()}\n");
-                        }));
-                    }
-                    else
-                    {
-                        Dispatcher.Invoke(new Action(() =>
-                        {
-                            rtb.AppendText($"Plotting already started for Container\n");
-                        }));
-                    }
-                    cxon = true;
-
+                    port.Write(first.ToUpper());
                 }
 
-                if ((first.Length == 14) && (first.Substring(9, 2) == "px"))
+                if (first.Substring(0, 11) == "cmd,1014,st")
                 {
-                    if (!pxon)
-                    {
-                        Dispatcher.Invoke(new Action(() =>
-                        {
-                            rtb.AppendText($"✅ Command Received: {first.ToUpper()}\n");
-                        }));
-                    }
-                    else
-                    {
-                        Dispatcher.Invoke(new Action(() =>
-                        {
-                            rtb.AppendText($"Plotting already started for Payload\n");
-                        }));
-                    }
-                    pxon = true;
+                    var temp = first.ToUpper();
+                    port.Write(temp);
                 }
             }
             catch { };
 
+            // sim,enable
+            try
+            {
+                if (first == "sim,enable" || first == "sim,on")
+                {
+                    // TODO: code still not working try fresh again
+                }
+            }
+            catch (Exception err)
+            {
+                Trace.WriteLine("Unable to start simulation mode: ", err.ToString());
+            }
+
+            // restart (Not to use)
             if (first == "restart")
             {
                 try
-                {
-                    port.Write("#RESTART$");
+                { 
+                    port.Write("$RESTART");
                     file = new StreamWriter(filePath + fileC, true);
-                    file.WriteLine("RESTART");
+                    file.WriteLine("RESTART\n");
                     file.Close();
                 }
                 catch { }
@@ -513,67 +495,53 @@ namespace GCS
                 {
                     port.Open();
                 }
-                catch 
+                catch
                 {
-                    Trace.WriteLine("Unable to open Port! Check again pls")
+                    Trace.WriteLine("Unable to open Port! Check again pls");
                 }
-                
+
                 rtb.AppendText("✅ Connection Established to GCS Arduino.\n");
             }
             catch
             {
-                rtb.AppendText("Unable to connect! \n");
+                rtb.AppendText("Unable to connect or already connected! \n");
             }
         }
 
         private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            Dispatcher.Invoke(new Action(() => { rtb.AppendText("✅ Received!\n"); }));
+
+            SerialPort sp = (SerialPort)sender;
+            string packet = sp.ReadLine();
+            Trace.WriteLine(packet);
+
+            if (packet.Length > 25)
             {
-                string packet = "";
+                // Edit According to the data received
+                string[] pack = packet.Split(',');
+                foreach (var item in pack)
+                    Trace.Write($"{item} ");
 
-                Dispatcher.Invoke(new Action(() => { rtb.AppendText("✅ Received!\n"); }));
-                fl++;
-
-                if (fl < 4)
+                // Container Data Received
+                if (pack[3] == "C")
                 {
-                    var i = port.ReadExisting().ToString();
-                    Trace.WriteLine(i);
-                    return;
-                }
-
-                // Break when # is encountered
-                while (true)
-                {
-                    var c = port.ReadChar();
-                    if (c == '#')
-                        break;
-                }
-
-                packet = port.ReadTo("$");
-                
-                if (packet.Length < 4)
-                {
-                    data.flightState = Convert.ToInt32(packet);
-                    goto FLIGHTSTATE;
-                }
-
-                else if (packet.Length > 15)
-                {
-                    // Edit According to the data received
-                    string[] pack = packet.Split(',');
-
-                    data.teamID = Convert.ToInt32(pack[0]);
-                    data.missionTime = Convert.ToInt32(pack[1]);
-                    data.packetCount = Convert.ToInt32(pack[2]);
-                    data.packetType = pack[3];
-                    data.mode = pack[4];
-                    data.tpReleased = pack[5];
-                    data.altitude = Convert.ToDouble(pack[6]);
-                    data.temp = Convert.ToDouble(pack[7]);
-                    data.voltage = Convert.ToDouble(pack[8]);
-                    data.gpsTime = Convert.ToDouble(pack[9]);
-                    data.gpsLatitude = Convert.ToDouble(pack[10]);
-                    data.gpsLongitude = Convert.ToDouble(pack[11]);
-                    data.gpsSats = Convert.ToDouble(pack[12]);
+                    //data.teamID = Convert.ToInt32(pack[0]);
+                    //data.missionTime = pack[1];
+                    //data.packetCount = Convert.ToInt32(pack[2]);
+                    //data.packetType = pack[3];
+                    //data.mode = pack[4];
+                    //data.tpReleased = pack[5];
+                    //data.altitude = Convert.ToDouble(pack[6]);
+                    //data.temp = Convert.ToDouble(pack[7]);
+                    //data.voltage = Convert.ToDouble(pack[8]);
+                    //data.gpsTime = Convert.ToDouble(pack[9]);
+                    //data.gpsLatitude = Convert.ToDouble(pack[10]);
+                    //data.gpsLongitude = Convert.ToDouble(pack[11]);
+                    //data.gpsAltitude = Convert.ToDouble(pack[12]);
+                    //data.gpsSats = Convert.ToDouble(pack[13]);
+                    //data.softwareState = pack[14];
+                    //data.cmdEcho = pack[15];
 
                     Dispatcher.Invoke(new Action(() =>
                     {
@@ -586,89 +554,188 @@ namespace GCS
                     file.Close();
 
                     // Plotting Check Here
-                    voltageChartValue.Add(data.voltage);
-                    temperatureChartValue.Add(data.temp);
-                    altitudeChartValue.Add(data.altitude);
+                    //voltageChartValue.Add(data.voltage);
+                    //temperatureChartValue.Add(data.temp);
+                    //altitudeChartValue.Add(data.altitude);
                 }
 
-            FLIGHTSTATE:
-                switch (data.flightState)
+                // Payload Data receieved
+                else if (pack[3] == "T")
                 {
-                    case 2:
-                        CalibratedEllipse.Fill = new SolidColorBrush(Colors.Green);
+                    Pdata.teamID = Convert.ToInt32(pack[0]);
+                    Pdata.missionTime = pack[1];
+                    Pdata.packetCount = Convert.ToInt32(pack[2]);
+                    Pdata.packetType = pack[3];
+                    Pdata.tpAltitude = Convert.ToDouble(pack[4]);
+                    Pdata.tpTemp = Convert.ToDouble(pack[5]);
+                    Pdata.tpVoltage = Convert.ToDouble(pack[6]);
+                    Pdata.gyroR = Convert.ToDouble(pack[7]);
+                    Pdata.gyroP = Convert.ToDouble(pack[8]);
+                    Pdata.gyroY = Convert.ToDouble(pack[9]);
+                    Pdata.accelR = Convert.ToDouble(pack[10]);
+                    Pdata.accelP = Convert.ToDouble(pack[11]);
+                    Pdata.accelY = Convert.ToDouble(pack[12]);
+                    Pdata.magR = Convert.ToDouble(pack[13]);
+                    Pdata.magP = Convert.ToDouble(pack[14]);
+                    Pdata.magY = Convert.ToDouble(pack[15]);
+                    Pdata.pointingError = pack[16];
+                    Pdata.tpSoftwareState = pack[17];
 
-                        if (f2 == 0)
-                        {
-                            Dispatcher.Invoke(new Action(() =>
-                            {
-                                rtb.AppendText("✅ Calibrated.. Waiting for Launch.\n");
-                            }));
-                            f2++;
-                        }
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        packetCnt += 1;
+                        AddInPayloadDG(pack);
+                    }));
 
-                        break;
+                    file = new StreamWriter(filePath + fileT, true);
+                    string packet1 = packet;
+                    file.WriteLine(packet1);
+                    file.Close();
 
-                    case 3:
-                        LaunchEllipse.Fill = new SolidColorBrush(Colors.Green);
+                    // Plotting Check Here
+                    voltageChartPayloadValue.Add(data.voltage);
+                    temperatureChartPayloadValue.Add(data.temp);
+                    altitudeChartPayloadValue.Add(data.altitude);
+                }
+                else
+                {
+                    var put = new string[5]
+                    {
+                        pack[0],
+                        pack[1],
+                        pack[2],
+                        pack[3],
+                        pack[4],
+                    };
 
-                        if (f3 == 0)
-                        {
-                            Dispatcher.Invoke(new Action(() =>
-                            {
-                                rtb.AppendText("✅ Launch Detected.. Ascending.\n");
-                            }));
-                            f3++;
-                        }
 
-                        break;
-
-                    case 4:
-                        ParachuteDeployedEllipse.Fill = new SolidColorBrush(Colors.Green);
-
-                        if (f4 == 0)
-                        {
-                            Dispatcher.Invoke(new Action(() =>
-                            {
-                                rtb.AppendText("✅ Parachute Deployed.. Descending.\n");
-                            }));
-                            f4++;
-                        }
-
-                        break;
-
-                
-                    case 5:
-                        PayloadReleasedEllipse.Fill = new SolidColorBrush(Colors.Green);
-
-                        if (f5 == 0)
-                        {
-                            Dispatcher.Invoke(new Action(() =>
-                            {
-                                rtb.AppendText("✅ Parachute Deployed.. Descending.\n");
-                            }));
-                            f5++;
-                        }
-
-                        break;
-
-                    case 6:
-                        LandedEllipse.Fill = new SolidColorBrush(Colors.Green);
-
-                        if (f6 == 0)
-                        {
-                            Dispatcher.Invoke(new Action(() =>
-                            {
-                                rtb.AppendText("✅ Landed!! 🎉\n");
-                            }));
-                            f6++;
-                        }
-
-                        break;
-
-                    default:
-                        break;
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        AddInCustomDG(put);
+                    }));
+                    var f = new StreamWriter(@"C:\Users\ISHWARENDRA\Desktop\log.txt", true);
+                    f.Write(packet);
+                    f.Close();
                 }
             }
+
+            void AddInCustomDG(string[] put)
+            {
+                try
+                {
+                    CustomDataGrid.Items.Add(new { TEAM_ID = put[0], MISSION_TIME = put[1], PACKET_COUNT = put[2], PACKET_TYPE = put[3], MESSAGE = put[4] });
+                }
+                catch
+                {
+                    Trace.WriteLine("More than 5 maybe");
+                }
+            }
+
+            void AddInContainerDG(string[] put)
+            {
+                try
+                {
+                    ContainerpacketCnt += 1;
+                    ContainerDataGrid.Items.Add(new { S_NO = ContainerpacketCnt, TEAM_ID = put[0], MISSION_TIME = put[1], PACKET_COUNT = put[2], PACKET_TYPE = put[3], MODE = put[4], TP_RELEASED = put[5], ALTITUDE = put[6], TEMP = put[7], VOLTAGE = put[8], GPS_TIME = put[9], GPS_LATITUDE = put[10], GPS_LONGITUDE = put[11], GPS_ALTITUDE = put[12], GPS_SATS = put[13], SOFTWARE_STATE = put[14], CMD_ECHO = put[15] });
+                }
+                catch
+                {
+                    Trace.WriteLine("Conatiner data smaller or buggy");
+                }
+            }
+
+            void AddInPayloadDG(string[] put)
+            {
+                try
+                {
+                    PayloadpacketCnt += 1;
+                    PayloadDataGrid.Items.Add(new { S_NO = PayloadpacketCnt, TEAM_ID = put[0], PACKET_COUNT = put[1], PACKET_TYPE = put[2], TP_ALTITUDE = put[3], TP_TEMP = put[4], TP_VOLTAGE = put[5], GYRO_R = put[6], GYRO_P = put[7], GYRO_Y = put[8], ACCEL_R = put[9], ACCEL_P = put[10], ACCEL_Y = put[11], MAG_R = put[12], MAG_P = put[13], MAG_Y = put[14], POINTING_ERROR = put[15], TP_SOFTWARE_STATE = put[16] });
+                }
+                catch
+                {
+                    Trace.WriteLine("Payload data smaller or buggy");
+                }
+            }
+
+            #region FLIGHTSTATE
+            //switch (data.flightState)
+            //{
+            //    case 2:
+            //        CalibratedEllipse.Fill = new SolidColorBrush(Colors.Green);
+
+            //        if (f2 == 0)
+            //        {
+            //            Dispatcher.Invoke(new Action(() =>
+            //            {
+            //                rtb.AppendText("✅ Calibrated.. Waiting for Launch.\n");
+            //            }));
+            //            f2++;
+            //        }
+
+            //        break;
+
+            //    case 3:
+            //        LaunchEllipse.Fill = new SolidColorBrush(Colors.Green);
+
+            //        if (f3 == 0)
+            //        {
+            //            Dispatcher.Invoke(new Action(() =>
+            //            {
+            //                rtb.AppendText("✅ Launch Detected.. Ascending.\n");
+            //            }));
+            //            f3++;
+            //        }
+
+            //        break;
+
+            //    case 4:
+            //        ParachuteDeployedEllipse.Fill = new SolidColorBrush(Colors.Green);
+
+            //        if (f4 == 0)
+            //        {
+            //            Dispatcher.Invoke(new Action(() =>
+            //            {
+            //                rtb.AppendText("✅ Parachute Deployed.. Descending.\n");
+            //            }));
+            //            f4++;
+            //        }
+
+            //        break;
+
+
+            //    case 5:
+            //        PayloadReleasedEllipse.Fill = new SolidColorBrush(Colors.Green);
+
+            //        if (f5 == 0)
+            //        {
+            //            Dispatcher.Invoke(new Action(() =>
+            //            {
+            //                rtb.AppendText("✅ Parachute Deployed.. Descending.\n");
+            //            }));
+            //            f5++;
+            //        }
+
+            //        break;
+
+            //    case 6:
+            //        LandedEllipse.Fill = new SolidColorBrush(Colors.Green);
+
+            //        if (f6 == 0)
+            //        {
+            //            Dispatcher.Invoke(new Action(() =>
+            //            {
+            //                rtb.AppendText("✅ Landed!! 🎉\n");
+            //            }));
+            //            f6++;
+            //        }
+
+            //        break;
+
+            //    default:
+            //        break;
+            //}
+            #endregion
+        }
 
         # region Useless 
         private void ReadPayloadDataFromCSV()
@@ -714,6 +781,19 @@ namespace GCS
         {
             foreach (var colName in a)
                 AddColumnInPayloadDataGridWithName(colName);
+        }
+
+        private void AddAllColumnInCustomDataGrid()
+        {
+            var ColName = new List<string> { "TEAM_ID", "MISSION_TIME", "PACKET_COUNT", "PACKET_TYPE", "MESSAGE" };
+
+            foreach (var header in ColName)
+            {
+                DataGridTextColumn textColumn = new DataGridTextColumn();
+                textColumn.Header = header;
+                textColumn.Binding = new Binding(header);
+                CustomDataGrid.Columns.Add(textColumn);
+            }
         }
 
         #endregion
