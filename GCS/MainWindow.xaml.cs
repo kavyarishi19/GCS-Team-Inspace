@@ -35,6 +35,7 @@ namespace GCS
         string filePath = @"C:\Users\ISHWARENDRA\source\repos\GCS-Team-Inspace\GCS\Resources\csvFiles\";
         string fileT = @"Flight_1014_T.csv";
         string fileC = @"Flight_1014_C.csv";
+        string fileSIM = @"C:\Users\ISHWARENDRA\Desktop\simData.txt";
 
         public int f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0, f6 = 0, fl = 0; // fL landing and f1 flight state-1
         private bool already_calibrated = false;
@@ -52,8 +53,8 @@ namespace GCS
         public struct Cpacket
         {
             public int teamID, packetCount, flightState;
-            public double gpsTime, gpsLatitude, gpsLongitude, gpsAltitude, gpsSats, altitude, temp, voltage;
-            public string mode, missionTime, tpReleased, softwareState, cmdEcho, packetType;
+            public double gpsLatitude, gpsLongitude, gpsAltitude, gpsSats, altitude, temp, voltage;
+            public string mode, missionTime, tpReleased, softwareState, cmdEcho, packetType, gpsTime;
         };
 
         // Payload Packet
@@ -190,7 +191,7 @@ namespace GCS
                 new Axis
                 {
                     MinValue = 0,
-                    MaxValue = 10
+                    MaxValue = 30
                 });
 
             voltageChart.Series.Add(mySeries1);
@@ -208,8 +209,8 @@ namespace GCS
             altitudeChart.AxisY.Add(
                 new Axis
                 {
-                    MinValue = -1,
-                    MaxValue = 3,
+                    MinValue = -200,
+                    MaxValue = 1000,
                 });
             altitudeChart.Series.Add(mySeries3);
 
@@ -219,7 +220,7 @@ namespace GCS
                 new Axis
                 {
                     MinValue = 0,
-                    MaxValue = 10
+                    MaxValue = 30
                 });
             LineSeries mySeries4 = new LineSeries
             {
@@ -248,8 +249,8 @@ namespace GCS
             altitudeChartPayload.AxisY.Add(
                 new Axis
                 {
-                    MinValue = -1,
-                    MaxValue = 3
+                    MinValue = -200,
+                    MaxValue = 1000
                 });
             LineSeries mySeries6 = new LineSeries
             {
@@ -425,6 +426,10 @@ namespace GCS
                 return;
 
             string first = s.ToString().ToLower();
+            Dispatcher.Invoke(new Action(() =>
+            {
+                rtb.AppendText($"Command: {first.ToUpper()}");
+            }));
 
             try
             {
@@ -461,9 +466,9 @@ namespace GCS
             // sim,enable
             try
             {
-                if (first == "sim,enable" || first == "sim,on")
+                if (first == "cmd,1014,sim,enable")
                 {
-                    // TODO: code still not working try fresh again
+                    port.Write(first.ToUpper());
                 }
             }
             catch (Exception err)
@@ -471,12 +476,47 @@ namespace GCS
                 Trace.WriteLine("Unable to start simulation mode: ", err.ToString());
             }
 
+            try
+            {
+                if (first == "cmd,1014,sim,activate")
+                {
+                    Trace.WriteLine($"sim command: {first.ToUpper()} receieved");
+                    port.Write(first.ToUpper());
+                    string[] data = System.IO.File.ReadAllLines(fileSIM);
+                    int i = 0;
+
+                    DispatcherTimer timerS;
+
+                    timerS = new DispatcherTimer(new TimeSpan(0, 0, 0, 0, 850), DispatcherPriority.Send, delegate
+                    {
+                        if (i < data.Length)
+                        { 
+                            Trace.WriteLine($"Received Data: {port.ReadLine()}");
+                            port.Write($"CMD,1014,SIMP,{data[i]}\0");
+                            i += 1;
+                        }
+                        else
+                        {
+                            Trace.WriteLine("SIMULATION MODE DATA DONE");
+                            return;
+                        }
+
+                    }, this.Dispatcher);
+
+                    timerS.Start();
+                }
+            }
+            catch (Exception err)
+            {
+                Trace.WriteLine("Unable to Activate simulation mode: ", err.ToString());
+            }
+
             // restart (Not to use)
             if (first == "restart")
             {
                 try
-                { 
-                    port.Write("$RESTART");
+                {
+                    port.Write("RESTART");
                     file = new StreamWriter(filePath + fileC, true);
                     file.WriteLine("RESTART\n");
                     file.Close();
@@ -516,7 +556,7 @@ namespace GCS
             string packet = sp.ReadLine();
             Trace.WriteLine(packet);
 
-            if (packet.Length > 25)
+            if (packet.Length > 0)
             {
                 // Edit According to the data received
                 string[] pack = packet.Split(',');
@@ -535,7 +575,7 @@ namespace GCS
                     data.altitude = Convert.ToDouble(pack[6]);
                     data.temp = Convert.ToDouble(pack[7]);
                     data.voltage = Convert.ToDouble(pack[8]);
-                    data.gpsTime = Convert.ToDouble(pack[9]);
+                    data.gpsTime = pack[9];
                     data.gpsLatitude = Convert.ToDouble(pack[10]);
                     data.gpsLongitude = Convert.ToDouble(pack[11]);
                     data.gpsAltitude = Convert.ToDouble(pack[12]);
@@ -554,6 +594,7 @@ namespace GCS
                     file.Close();
 
                     // Plotting Check Here
+                    Trace.WriteLine($"volt: {data.voltage} temp:{data.temp} alt: {data.altitude}");
                     voltageChartValue.Add(data.voltage);
                     temperatureChartValue.Add(data.temp);
                     altitudeChartValue.Add(data.altitude);
