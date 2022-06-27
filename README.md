@@ -6,7 +6,9 @@
   - Dummy Graph Images (not used now) and Team LOGO
   - CSVFiles Folder: It contains the csv files for container and payload data
 
-- `MQTTPublisher.cs`: MQTT Publisher Code (MQTTnet Library Used)
+- ~~`MQTTPublisher.cs`: MQTT Publisher Code (MQTTnet Library Used)~~ Not using this.
+
+- `mqtt.py`: Contains MQTT Publisher code (Written using MQTT Paho library)
 
 - `MainWindow.xaml`: Contains the xaml file for GCS
 
